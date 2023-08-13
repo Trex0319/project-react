@@ -1,92 +1,55 @@
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
-import React, { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
+import { Link } from "react-router-dom";
 import "./index.css";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import "react-datepicker/dist/react-datepicker.css";
-
-const locales = {
-  "en-US": require("date-fns/locale/en-US"),
-};
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { TextInput } from "@mantine/core";
 
 export default function Home() {
-  const [newEvent, setNewEvent] = useState({
-    title: "",
-    start: null,
-    end: null,
-  });
-  const [allEvent, setAllEvent] = useState([]);
+  const tasks = JSON.parse(localStorage.getItem("tasks"));
+  const [keywords, setKeywords] = useState("");
+  const [incomeList, setIncomeList] = useState([]);
+  const [filter, setFilter] = useState("");
 
-  useEffect(() => {
-    const savedEvents = localStorage.getItem("events");
-    if (savedEvents) {
-      setAllEvent(JSON.parse(savedEvents));
-    }
-  }, []);
-
-  function handleAddEvent() {
-    if (newEvent.title && newEvent.start && newEvent.end) {
-      const newEndDate = new Date(newEvent.end);
-      newEndDate.setMinutes(newEndDate.getMinutes() + 1);
-
-      const updatedEvents = [...allEvent, { ...newEvent, end: newEndDate }];
-      setAllEvent(updatedEvents);
-      setNewEvent({ title: "", start: null, end: null });
-
-      localStorage.setItem("events", JSON.stringify(updatedEvents));
-    }
-  }
+  const filteredList = useMemo(() => {
+    return incomeList.filter(
+      (i) => i.name.toLowerCase().indexOf(keywords.toLowerCase()) >= 0
+    );
+  }, [filter, incomeList, keywords]);
 
   return (
-    <div className="Calendar">
-      <h1>Calendar</h1>
-      <h2>Add New Event</h2>
-      <div>
-        <input
-          type="text"
-          placeholder="Add Title"
-          style={{ width: "20%", marginRight: "10px" }}
-          value={newEvent.title}
-          onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-        />
-        <DatePicker
-          placeholderText="Start Date"
-          style={{ marginRight: "10px" }}
-          selected={newEvent.start}
-          onChange={(start) => setNewEvent({ ...newEvent, start })}
-          showTimeSelect
-          dateFormat="Pp"
-        />
-        <DatePicker
-          placeholderText="End Date"
-          selected={newEvent.end}
-          onChange={(end) => setNewEvent({ ...newEvent, end })}
-          showTimeSelect
-          dateFormat="Pp"
-        />
+    <div className="container mx-auto my-5">
+      <h1 className="h1 mb-4 text-center">My Task</h1>
+      {tasks
+        ? tasks
+            .filter((p) => p.status === "publish" || p.status === "private")
+            .map((task) => {
+              return (
+                <div key={task.id} className="card mb-2">
+                  <div className="card-body">
+                    <h5 className="card-title">{task.title}</h5>
+                    <div className="text-end">
+                      <Link
+                        to={`/task/${task.id}`}
+                        className="btn btn-primary btn-sm"
+                      >
+                        Read More
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+        : null}
 
-        <button style={{ marginTop: "10px" }} onClick={handleAddEvent}>
-          Add Event
-        </button>
+      <div className="frame">
+        <Link to="/manage-tasks">
+          <button className="custom-btn btn-9">Manage-Task</button>
+        </Link>
       </div>
-      <Calendar
-        localizer={localizer}
-        events={allEvent}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500, margin: "50px" }}
-      />
     </div>
   );
 }

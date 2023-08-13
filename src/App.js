@@ -1,16 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/home";
-import Add from "./pages/add_task";
-// import Task from "./pages/task";
+import ManageTask from "./pages/manage-tasks";
+import ManageTasksEdit from "./pages/manage-tasks-edit";
+import Task from "./pages/task";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/task" element={<Task />} /> */}
-        <Route path="/add" element={<Add />} />
+        <Route path="/manage-tasks" element={<ManageTask />} />
+        <Route path="/manage-tasks-edit/:id" element={<ManageTasksEdit />} />
+        <Route path="/task/:id" element={<Task />} />
       </Routes>
     </Router>
   );
