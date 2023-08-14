@@ -9,6 +9,8 @@ export default function ManageTask() {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [date_end, setDate_end] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const submitForm = () => {
     let tasks = JSON.parse(localStorage.getItem("tasks"));
@@ -27,12 +29,10 @@ export default function ManageTask() {
     setTitle("");
     setDate("");
     setDate_end("");
-    window.location.reload();
+    setTasks(tasks);
+    close();
   };
   // modal
-
-  const [tasks, setTasks] = useState([]);
-  const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
     const tasks = JSON.parse(localStorage.getItem("tasks"));
