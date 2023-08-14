@@ -21,9 +21,10 @@ export default function Task() {
   useEffect(() => {
     const list = JSON.parse(localStorage.getItem("list"));
     if (list) {
-      setList(list);
+      const filteredList = list.filter((item) => item.taskId === id);
+      setList(filteredList);
     }
-  }, []);
+  }, [id]);
 
   const noonListCount = useMemo(() => {
     return list2.length;
@@ -32,9 +33,10 @@ export default function Task() {
   useEffect(() => {
     const list2 = JSON.parse(localStorage.getItem("list2"));
     if (list2) {
-      setList2(list2);
+      const filteredList2 = list2.filter((item) => item.taskId === id);
+      setList2(filteredList2);
     }
-  }, []);
+  }, [id]);
 
   const nightListCount = useMemo(() => {
     return list3.length;
@@ -43,9 +45,10 @@ export default function Task() {
   useEffect(() => {
     const list3 = JSON.parse(localStorage.getItem("list3"));
     if (list3) {
-      setList(list3);
+      const filteredList3 = list3.filter((item) => item.taskId === id);
+      setList3(filteredList3);
     }
-  }, []);
+  }, [id]);
 
   const tasks = JSON.parse(localStorage.getItem("tasks"));
   let task = null;
@@ -64,9 +67,11 @@ export default function Task() {
       id: nanoid(),
       text: input,
       isCompleted: false,
+      taskId: id,
     });
 
     setList(newList);
+    console.log(newList);
     localStorage.setItem("list", JSON.stringify(newList));
 
     setInput("");
@@ -79,6 +84,7 @@ export default function Task() {
       id: nanoid(),
       text: input2,
       isCompleted: false,
+      taskId: id,
     });
 
     setList2(newList2);
@@ -94,6 +100,7 @@ export default function Task() {
       id: nanoid(),
       text: input3,
       isCompleted: false,
+      taskId: id,
     });
 
     setList3(newList3);
